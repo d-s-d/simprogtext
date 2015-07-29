@@ -54,20 +54,29 @@ func (sf *SimProgFile) output(w io.Writer) {
     }
 }
 
-
-type Var interface {
+type SimpleVar interface {
     VarName() string
 }
 
-type SSAVar struct {
+type SSAVar interface {
+    Var
+    Next() string
+}
+
+type SSA struct {
     name string
     version uint
 }
 
-func NewSSAVar(name string) *SSAVar {
-    return &SSAVar{name, 0}
+func NewSSAVar(name string) SSAVar {
+    return &SSAv{name, 0}
 }
 
-func (v *SSAVar) VarName() string {
+func (v *SSAv) VarName() string {
     return fmt.Sprintf("%s_%d", v.name, v.version)
+}
+
+func (v *SSAv) Next() string {
+    v.version += 1
+    return v.VarName()
 }
